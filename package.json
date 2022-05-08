@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "file-find": "ts-node index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "bluebird": "^3.7.2"
+    "bluebird": "^3.7.2",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "ts-node": "^10.7.0"
   }
 }
