@@ -1,29 +1,27 @@
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs'));
-const crypto = require('crypto');
-const path = require('path');
+import bluebird from 'bluebird';
+const fs = bluebird.promisifyAll(require('fs'));
+import cryptolib from 'crypto';
+import path from 'path';
+import { Folder } from './types';
 
 const paths = process.argv.slice(2); // folder you're in, wherever that might be
 
-const hashes = []; // where the magical hashes will be stored - but wait, that's not all, now also with file info!
+const hashes: File[] = []; // where the magical hashes will be stored - but wait, that's not all, now also with file info!
 
 // I dub this: promise hell! (or possibly this could just be done eons better, but well, it works...)
-function hashDirIn(folder) {
-	const pathPromiseA = fs.readdirAsync(folder).map(function(fileName) {
-		const workPath = path.join(folder, fileName);
+function hashDirIn(folder: Folder) {
+	const pathPromiseA = fs.readdirAsync(folder).map((fileName: string) => {
+		const workPath = path.join(folder.name, fileName);
 		const statPromise = fs.statAsync(workPath);
 		
-		return Promise.join(statPromise, fileName, function(statPromise, fileName) {
+		return bluebird.join(statPromise, fileName, (statPromise, fileName) => {
 			
 			if(statPromise.isFile()) {
 
-				function makeStream(file, callback) {
-					const result = fs.createReadStream(workPath);
-					return callback(result);
-				}
+				
 
 				function process(stream) {
-					const hash = crypto.createHash('md5'); 
+					const hash = cryptolib.createHash('md5'); 
 					return new Promise(function(resolve, reject) {
 						stream.on('data', function updateProcess(chunk) {
 							hash.update(chunk, 'utf8');
